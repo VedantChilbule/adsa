@@ -1,0 +1,52 @@
+#include <stdio.h>
+
+#define MAX 20
+
+// DFS Function
+void DFS(int graph[MAX][MAX], int vertex, int visited[MAX], int n) {
+    visited[vertex] = 1; // Mark the current vertex as visited
+    printf("Visited Node %d\n", vertex);
+
+    for (int v = 1; v <= n; v++) {
+        if (graph[vertex][v] == 1 && visited[v] == 0) {
+            DFS(graph, v, visited, n); // Recursively visit adjacent vertices
+        }
+    }
+}
+
+// Main Function
+int main() {
+    int n, graph[MAX][MAX], visited[MAX] = {0}, source;
+
+    // Input the number of vertices
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    // Input the adjacency matrix
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    // Input the source node
+    printf("Enter the source node: ");
+    scanf("%d", &source);
+
+    // Perform DFS
+    printf("DFS Traversal starting from node %d:\n", source);
+    DFS(graph, source, visited, n);
+
+    // Check if the graph is connected
+    for (int i = 1; i <= n; i++) {
+        if (visited[i] == 0) {
+            printf("Graph is not connected.\n");
+            return 0;
+        }
+    }
+
+    printf("Graph is connected.\n");
+
+    return 0;
+}

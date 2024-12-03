@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int element;
+    struct TreeNode *left, *right;
+};
+
+typedef struct TreeNode *Node;
+
+// Function prototypes
+Node insert(Node root, int value);
+Node delete(Node root, int value);
+Node find(Node root, int value);
+Node findMin(Node root);
+Node findMax(Node root);
+void display(Node root, int level);
+void freeTree(Node root);
+
+// Main function
+int main() {
+    Node root = NULL; // Initialize an empty tree
+    int choice, value;
+
+    while (1) {
+        printf("\n--- Binary Search Tree Menu ---\n");
+        printf("1. Insert\n2. Delete\n3. Search\n4. Find Min\n5. Find Max\n6. Display\n7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter value to insert: ");
+            scanf("%d", &value);
+            root = insert(root, value);
+            break;
+
+        case 2:
+            printf("Enter value to delete: ");
+            scanf("%d", &value);
+            root = delete(root, value);
+            break;
+
+        case 3:
+            printf("Enter value to search: ");
+            scanf("%d", &value);
+            if (find(root, value))
+                printf("Value %d found in the tree.\n", value);
+            else
+                printf("Value %d not found in the tree.\n", value);
+            break;
+
+        case 4:
+            if (root) {
+                Node minNode = findMin(root);
+                printf("Minimum value: %d\n", minNode->element);
+            } else {
+                printf("Tree is empty.\n");
+            }
+            break;
+
+        case 5:
+            if (root) {
+                Node maxNode = findMax(root);
+                printf("Maximum value: %d\n", maxNode->element);
+            } else {
+                printf("Tree is empty.\n");
+            }
+            break;
+
+        case 6:
+            if (root) {
+                printf("Tree structure:\n");
+                display(root, 0);
+            } else {
+                printf("Tree is empty.\n");
+            }
+            break;
+
+        case 7:
+            freeTree(root); // Free allocated memory
+            printf("Exiting program.\n");
+            return 0;
+
+        default:
+            printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+// Function to insert a value into the tree
+Node insert(Node root, int value) {
+    if (root == NULL) {
+        root = (Node)malloc(sizeof(struct TreeNode));
+        root->element = value;
+        root->left = root->right = NULL;
+    } else if (value < root->element) {
+        root->left = insert(root->left, value);
+    } else if (value > root->element) {
+        root->right = insert(root->right, value);
+    }
+    return root;
+}
+
+// Function to delete a value from the tree
+Node delete(Node root, int value) {
+    if (root == NULL) {
+        printf("Value not found in the tree.\n");
+        return NULL;
+    }
+
+    if (value < root->element) {
+        root->left = delete(root->left, value);
+    } else if (value > root->element) {
+        root->right = delete(root->right, value);
+    } else {
+        // Node with one child or no child
+        if (root->left == NULL) {
+            Node temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            Node temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node with two children
+        Node temp = findMin(root->right);
+        root->element = temp->element;
+        root->right = delete(root->right, temp->element);
+    }
+    return root;
+}
+
+// Function to find a value in the tree
+Node find(Node root, int value) {
+    if (root == NULL || root->element == value) {
+        return root;
+    } else if (value < root->element) {
+        return find(root->left, value);
+    } else {
+        return find(root->right, value);
+    }
+}
+
+// Function to find the minimum value in the tree
+Node findMin(Node root) {
+    while (root && root->left) {
+        root = root->left;
+    }
+    return root;
+}
+
+// Function to find the maximum value in the tree
+Node findMax(Node root) {
+    while (root && root->right) {
+        root = root->right;
+    }
+    return root;
+}
+
+// Function to display the tree
+void display(Node root, int level) {
+    if (root) {
+        display(root->right, level + 1);
+        for (int i = 0; i < level; i++) {
+            printf("    ");
+        }
+        printf("%d\n", root->element);
+        display(root->left, level + 1);
+    }
+}
+
+// Function to free all nodes in the tree
+void freeTree(Node root) {
+    if (root) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}

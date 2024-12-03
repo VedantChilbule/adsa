@@ -1,0 +1,66 @@
+#include <stdio.h>
+#define INF 999
+
+void dijkstra(int n, int cost[20][20], int source, int distance[20]) {
+    int visited[20] = {0}; // Tracks visited nodes
+    int i, j, minDist, nextNode;
+
+    // Initialize distances and visited array
+    for (i = 1; i <= n; i++) {
+        distance[i] = cost[source][i];
+    }
+    visited[source] = 1;
+    distance[source] = 0;
+
+    // Main loop to find shortest paths
+    for (i = 1; i < n; i++) {
+        minDist = INF;
+        nextNode = -1;
+
+        // Find the next unvisited node with the smallest distance
+        for (j = 1; j <= n; j++) {
+            if (!visited[j] && distance[j] < minDist) {
+                minDist = distance[j];
+                nextNode = j;
+            }
+        }
+
+        if (nextNode != -1) {
+            visited[nextNode] = 1;
+
+            // Update distances to neighboring nodes
+            for (j = 1; j <= n; j++) {
+                if (!visited[j] && cost[nextNode][j] != INF && distance[nextNode] + cost[nextNode][j] < distance[j]) {
+                    distance[j] = distance[nextNode] + cost[nextNode][j];
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int n, cost[20][20], distance[20], source;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter the cost adjacency matrix (use 999 for no edge):\n");
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            scanf("%d", &cost[i][j]);
+        }
+    }
+
+    printf("Enter the source node: ");
+    scanf("%d", &source);
+
+    dijkstra(n, cost, source, distance);
+
+    printf("\nShortest paths from node %d:\n", source);
+    for (int i = 1; i <= n; i++) {
+        if (i != source) {
+            printf("To node %d: %d\n", i, distance[i]);
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+#define MAX 20
+
+// BFS Function
+void BFS(int graph[MAX][MAX], int source, int visited[MAX], int n) {
+    int queue[MAX], front = 0, rear = 0; // Initialize queue
+    queue[rear] = source;               // Enqueue the source node
+    visited[source] = 1;                // Mark source as visited
+
+    printf("BFS Traversal starting from node %d:\n", source);
+
+    while (front <= rear) {
+        int current = queue[front++];   // Dequeue a node
+        printf("Node %d\n", current);   // Print the visited node
+
+        for (int v = 1; v <= n; v++) {
+            // Check adjacency and if the node is not visited
+            if (graph[current][v] == 1 && visited[v] == 0) {
+                queue[++rear] = v;      // Enqueue the adjacent node
+                visited[v] = 1;         // Mark it as visited
+            }
+        }
+    }
+}
+
+// Main Function
+int main() {
+    int n, graph[MAX][MAX], visited[MAX] = {0}, source;
+
+    // Input the number of vertices
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    // Input the adjacency matrix
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    // Input the source node
+    printf("Enter the source node: ");
+    scanf("%d", &source);
+
+    // Perform BFS
+    BFS(graph, source, visited, n);
+
+    // Check for reachable and non-reachable nodes
+    printf("Reachability:\n");
+    for (int i = 1; i <= n; i++) {
+        if (visited[i]) {
+            printf("Node %d is reachable.\n", i);
+        } else {
+            printf("Node %d is not reachable.\n", i);
+        }
+    }
+
+    return 0;
+}

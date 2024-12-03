@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 10
+
+int n, cost[MAX][MAX];
+
+void prim() {
+    int visited[MAX] = {0}; // Track visited vertices
+    int tree[MAX][3];       // Store edges of the Minimum Spanning Tree
+    int totalCost = 0, edgeCount = 0;
+
+    visited[0] = 1; // Start from the first vertex
+
+    while (edgeCount < n - 1) {
+        int min = INT_MAX, u = -1, v = -1;
+
+        // Find the smallest edge connecting a visited vertex to an unvisited vertex
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) {
+                for (int j = 0; j < n; j++) {
+                    if (!visited[j] && cost[i][j] && cost[i][j] < min) {
+                        min = cost[i][j];
+                        u = i;
+                        v = j;
+                    }
+                }
+            }
+        }
+
+        if (u != -1 && v != -1) {
+            tree[edgeCount][0] = u;
+            tree[edgeCount][1] = v;
+            tree[edgeCount][2] = min;
+            totalCost += min;
+            visited[v] = 1;
+            edgeCount++;
+        }
+    }
+
+    // Print the Minimum Spanning Tree
+    printf("\nThe Minimum Spanning Tree is:\n");
+    for (int i = 0; i < edgeCount; i++) {
+        printf("Edge: %d -> %d, Cost: %d\n", tree[i][0], tree[i][1], tree[i][2]);
+    }
+    printf("\nTotal Minimum Cost: %d\n", totalCost);
+}
+
+int main() {
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter the cost adjacency matrix (use 0 for no edge):\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &cost[i][j]);
+            if (cost[i][j] == 0 && i != j) {
+                cost[i][j] = INT_MAX; // Replace 0 with a large value for non-edges
+            }
+        }
+    }
+
+    prim();
+    return 0;
+}

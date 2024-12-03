@@ -1,0 +1,77 @@
+#include <stdio.h>
+
+#define MAX 50
+
+int arr[MAX];
+
+// Function to merge two sorted subarrays
+void merge(int low, int mid, int high) {
+    int temp[MAX]; // Temporary array
+    int i = low, j = mid + 1, k = low;
+
+    // Merge the two subarrays into `temp`
+    while (i <= mid && j <= high) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+        }
+    }
+
+    // Copy any remaining elements from the left subarray
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
+
+    // Copy any remaining elements from the right subarray
+    while (j <= high) {
+        temp[k++] = arr[j++];
+    }
+
+    // Copy the sorted elements back into the original array
+    for (i = low; i <= high; i++) {
+        arr[i] = temp[i];
+    }
+}
+
+// Function to perform Merge Sort
+void merge_sort(int low, int high) {
+    if (low < high) {
+        int mid = (low + high) / 2;
+
+        // Recursively sort the left and right halves
+        merge_sort(low, mid);
+        merge_sort(mid + 1, high);
+
+        // Merge the two sorted halves
+        merge(low, mid, high);
+    }
+}
+
+// Main Function
+int main() {
+    int n;
+
+    // Input the number of elements
+    printf("MERGE SORT\n");
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    // Input the elements of the array
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // Perform Merge Sort
+    merge_sort(0, n - 1);
+
+    // Output the sorted array
+    printf("Sorted Array:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}

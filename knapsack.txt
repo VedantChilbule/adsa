@@ -1,0 +1,78 @@
+#include <stdio.h>
+
+void knapsack(int n, float weight[], float profit[], float capacity) {
+    float x[20] = {0}, maxProfit = 0; // Initialize solution vector and max profit
+    int i;
+    float remainingCapacity = capacity;
+
+    for (i = 0; i < n; i++) {
+        if (weight[i] <= remainingCapacity) {
+            x[i] = 1.0; // Take the entire item
+            maxProfit += profit[i];
+            remainingCapacity -= weight[i];
+        } else {
+            x[i] = remainingCapacity / weight[i]; // Take fraction of the item
+            maxProfit += x[i] * profit[i];
+            break;
+        }
+    }
+
+    // Display result
+    printf("\nSelected fractions: ");
+    for (i = 0; i < n; i++) {
+        printf("%.2f ", x[i]);
+    }
+    printf("\nMaximum profit: %.2f\n", maxProfit);
+}
+
+int main() {
+    int num, i, j;
+    float weight[20], profit[20], capacity;
+    float ratio[20], temp;
+
+    // Input number of items
+    printf("Enter the number of items: ");
+    scanf("%d", &num);
+
+    // Input weights and profits
+    printf("Enter the weights and profits of each item:\n");
+    for (i = 0; i < num; i++) {
+        scanf("%f %f", &weight[i], &profit[i]);
+    }
+
+    // Input knapsack capacity
+    printf("Enter the capacity of the knapsack: ");
+    scanf("%f", &capacity);
+
+    // Calculate profit-to-weight ratio
+    for (i = 0; i < num; i++) {
+        ratio[i] = profit[i] / weight[i];
+    }
+
+    // Sort items by profit-to-weight ratio in descending order
+    for (i = 0; i < num - 1; i++) {
+        for (j = i + 1; j < num; j++) {
+            if (ratio[i] < ratio[j]) {
+                // Swap ratio
+                temp = ratio[i];
+                ratio[i] = ratio[j];
+                ratio[j] = temp;
+
+                // Swap weight
+                temp = weight[i];
+                weight[i] = weight[j];
+                weight[j] = temp;
+
+                // Swap profit
+                temp = profit[i];
+                profit[i] = profit[j];
+                profit[j] = temp;
+            }
+        }
+    }
+
+    // Solve the knapsack problem
+    knapsack(num, weight, profit, capacity);
+
+    return 0;
+}
